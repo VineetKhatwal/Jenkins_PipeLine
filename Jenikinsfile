@@ -1,0 +1,59 @@
+pipeline {
+    agent {
+        label 'Dev*'
+    }
+    stages {
+        stage('Git-CheckOut') {
+                steps {
+                    echo 'Checking out from Git Repo!!!'
+                    git branch: 'main', url: 'https://github.com/VineetKhatwal/Jenkins_PipeLine.git'
+                }
+        }
+        stage('Build') {
+                steps {
+                    echo 'Building the check out repository'
+                    sh 'chmod 777 ./Build.sh'
+                    sh './Build.sh'
+                }
+        }
+        stage('Unit-Test') {
+                steps {
+                    echo 'Running the JUnit Test'
+                    sh 'chmod 777 ./Unit.sh'
+                    sh './Unit.sh'
+                }
+        }
+        stage('Quality') {
+                steps {
+                    echo 'Running the Quality System Test'
+                    sh 'chmod 777 ./Quality.sh'
+                    sh './Quality.sh'
+                }
+        }
+        stage('Deploy') {
+                steps {
+                    echo 'Deployed'
+                    sh 'chmod 777 ./Deploy.sh'
+                    sh './Deploy.sh'
+                }
+        }
+    }
+
+    post {
+        always{
+            echo 'This will always run'
+        }
+        success{
+            echo 'The runs only when successful'
+        }
+        failure{
+            echo 'The runs only when failed'
+        }
+        unstable{
+            echo 'The runs only when unstable'
+        }
+        changed{
+            echo 'The runs only when pipeline has changed'
+        }
+    }
+}
